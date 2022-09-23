@@ -7,6 +7,8 @@ import org.json.JSONObject;
 
 import java.io.*;
 
+import static com.jericho.freefre.Utilities.CSVWriter.writeCSV;
+
 public class FileIO {
 
     // Path to resources file:
@@ -58,5 +60,7 @@ public class FileIO {
         fileWriter.write(json.toString(4));
         fileWriter.flush();
         fileWriter.close();
+
+        writeCSV();
     }
 }

@@ -47,8 +47,8 @@ public class OptIn implements CommandInterface {
 
             JSONObject user = new JSONObject();
 
-            user.put("Name", userName);
             user.put("Free Fire ID", "Not Set");
+            user.put("Name", userName);
             user.put("Discord ID", userID);
             database.put(user);
 

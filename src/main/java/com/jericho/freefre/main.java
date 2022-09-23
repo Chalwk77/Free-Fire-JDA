@@ -18,7 +18,6 @@ import org.json.JSONObject;
 import javax.security.auth.login.LoginException;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import static com.jericho.freefre.Utilities.FileIO.loadJSONArray;
 import static com.jericho.freefre.Utilities.FileIO.loadJSONObject;

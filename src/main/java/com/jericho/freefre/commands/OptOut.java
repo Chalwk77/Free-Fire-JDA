@@ -7,9 +7,11 @@ import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEve
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.jericho.freefre.Utilities.FileIO.writeJSONFile;
 import static com.jericho.freefre.main.database;
 
 public class OptOut implements CommandInterface {
@@ -39,7 +41,7 @@ public class OptOut implements CommandInterface {
     }
 
     @Override
-    public void execute(SlashCommandInteractionEvent event) {
+    public void execute(SlashCommandInteractionEvent event) throws IOException {
         var userID = event.getUser().getId();
         if (database.length() == 0) {
             event.reply("You are not opted in.").setEphemeral(true).queue();
@@ -52,6 +54,7 @@ public class OptOut implements CommandInterface {
                     } else {
                         event.reply("You have not been opted out.").setEphemeral(true).queue();
                     }
+                    writeJSONFile(database, "database.json");
                     return;
                 } else {
                     event.reply("You need to opt-in first.").setEphemeral(true).queue();

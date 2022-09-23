@@ -68,7 +68,7 @@ public class Link implements CommandInterface {
                         if (option_value.equals(header)) {
                             event.reply("URL (**" + url + "**) has been added to header (**" + header + "**).").setEphemeral(true).queue();
                             updateDatabase(header, false, url, event.getUser().getId());
-                            break;
+                            return;
                         }
                     }
                 }

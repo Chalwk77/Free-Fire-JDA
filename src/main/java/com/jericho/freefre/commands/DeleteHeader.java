@@ -61,7 +61,7 @@ public class DeleteHeader implements CommandInterface {
                         if (option_value.equals(header)) {
                             event.reply("Header (**" + header + "**) has been deleted.").setEphemeral(true).queue();
                             updateDatabase(header, false, "null", "null");
-                            break;
+                            return;
                         }
                     }
                 }
