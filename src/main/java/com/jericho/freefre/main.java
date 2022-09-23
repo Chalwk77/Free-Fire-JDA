@@ -2,11 +2,8 @@
 
 package com.jericho.freefre;
 
-import com.jericho.freefre.commands.Attach;
-import com.jericho.freefre.commands.Link;
-import com.jericho.freefre.commands.OptOut;
+import com.jericho.freefre.commands.*;
 import com.jericho.freefre.listeners.CommandManager;
-import com.jericho.freefre.commands.OptIn;
 import com.jericho.freefre.listeners.EventListeners;
 
 import net.dv8tion.jda.api.OnlineStatus;
@@ -21,6 +18,7 @@ import org.json.JSONObject;
 import javax.security.auth.login.LoginException;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import static com.jericho.freefre.Utilities.FileIO.loadJSONArray;
 import static com.jericho.freefre.Utilities.FileIO.loadJSONObject;
@@ -32,14 +30,20 @@ public class main {
 
     static {
         try {
+
             settings = loadJSONObject("settings.json");
             database = loadJSONArray("database.json");
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
     private final ShardManager shardManager;
+
+    public static void cprint(String message) {
+        System.out.println(message);
+    }
 
     // Return the bot token:
     public static String getToken() {
@@ -51,11 +55,7 @@ public class main {
         DefaultShardManagerBuilder builder = DefaultShardManagerBuilder.createDefault(token);
         builder.setStatus(OnlineStatus.ONLINE);
         builder.setActivity(Activity.watching("YOU"));
-        builder.enableIntents(
-                GatewayIntent.GUILD_MEMBERS,
-                GatewayIntent.GUILD_MESSAGES,
-                GatewayIntent.MESSAGE_CONTENT
-        );
+        builder.enableIntents(GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.MESSAGE_CONTENT);
         shardManager = builder.build();
         shardManager.addEventListener(new EventListeners());
 
@@ -64,6 +64,8 @@ public class main {
         manager.add(new OptIn());
         manager.add(new OptOut());
         manager.add(new Attach());
+        manager.add(new AddHeader());
+        manager.add(new DeleteHeader());
 
         shardManager.addEventListener(manager);
     }

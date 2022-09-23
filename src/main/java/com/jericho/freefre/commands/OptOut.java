@@ -24,6 +24,10 @@ public class OptOut implements CommandInterface {
         return "Opt-out of the FF ID database";
     }
 
+    public String getRole() {
+        return "Guest";
+    }
+
     @Override
     public List<OptionData> getOptions() {
         List<OptionData> data = new ArrayList<>();

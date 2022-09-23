@@ -14,6 +14,8 @@ public interface CommandInterface {
 
     String getDescription();
 
+    String getRole();
+
     List<OptionData> getOptions();
 
     void execute(SlashCommandInteractionEvent event) throws IOException;

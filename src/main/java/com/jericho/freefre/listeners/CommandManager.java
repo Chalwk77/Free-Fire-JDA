@@ -30,7 +30,15 @@ public class CommandManager extends ListenerAdapter {
         for (CommandInterface command : commands) {
             if (event.getName().equals(command.getName())) {
                 try {
-                    command.execute(event);
+
+                    List<String> roles = new ArrayList<>();
+                    event.getMember().getRoles().forEach(role -> roles.add(role.getName()));
+                    if (roles.contains(command.getRole())) {
+                        command.execute(event);
+                    } else {
+                        event.reply("You do not have permission to use this command.").setEphemeral(true).queue();
+                    }
+
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }

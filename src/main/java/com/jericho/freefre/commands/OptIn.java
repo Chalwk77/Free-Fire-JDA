@@ -3,11 +3,9 @@
 package com.jericho.freefre.commands;
 
 import com.jericho.freefre.listeners.CommandInterface;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -29,6 +27,10 @@ public class OptIn implements CommandInterface {
         return "Opt-in to the FF ID database";
     }
 
+    public String getRole() {
+        return "Guest";
+    }
+
     @Override
     public List<OptionData> getOptions() {
         List<OptionData> data = new ArrayList<>();
@@ -41,16 +43,13 @@ public class OptIn implements CommandInterface {
 
     private static void newOptin(String userID, String userName, SlashCommandInteractionEvent event) throws IOException {
 
-        // Check if the choice was yes or no
         if (event.getOption("confirm").getAsString().equals("yes")) {
 
             JSONObject user = new JSONObject();
-            JSONArray links = new JSONArray();
 
-            user.put("Discord ID", userID);
-            user.put("Username", userName);
+            user.put("Name", userName);
             user.put("Free Fire ID", "Not Set");
-            user.put("Links", links);
+            user.put("Discord ID", userID);
             database.put(user);
 
             writeJSONFile(database, "database.json");
@@ -71,14 +70,15 @@ public class OptIn implements CommandInterface {
         if (database.length() == 0) {
             newOptin(userID, username, event);
         } else {
+
             for (int i = 0; i < database.length(); i++) {
                 if (database.getJSONObject(i).getString("Discord ID").equals(userID)) {
                     event.reply("You are already in the database!").setEphemeral(true).queue();
                     return;
-                } else {
-                    newOptin(userID, username, event);
                 }
             }
+
+            newOptin(userID, username, event);
         }
     }
 }
