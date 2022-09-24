@@ -1,4 +1,4 @@
-# Free-Fire-JDA-
+# Free-Fire-JDA
 A discord Bot for {BK}Mark
 
 **COMMANDS:**
