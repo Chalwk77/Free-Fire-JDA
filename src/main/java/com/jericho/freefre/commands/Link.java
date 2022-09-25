@@ -38,41 +38,43 @@ public class Link implements CommandInterface {
         OptionData url = new OptionData(OptionType.STRING, "url", "URL to link.", true);
         OptionData options = new OptionData(OptionType.STRING, "header", "Add URL to this header.", true);
 
+        // Create new list to hold the headers that have been added to options:
+        List<String> headers = new ArrayList<>();
+
         for (int i = 0; i < database.length(); i++) {
             for (String key : database.getJSONObject(i).keySet()) {
-                if (!key.equals("Name") && !key.equals("Discord ID") && !key.equals("Free Fire ID")) {
+                if (!key.equals("Name") && !key.equals("Discord ID") && !key.equals("Free Fire ID") && !headers.contains(key)) {
                     options.addChoice(key, key);
+                    headers.add(key);
                 }
             }
         }
-
         data.add(url);
         data.add(options);
+        headers.clear();
         return data;
+    }
+
+    public static void newURL(SlashCommandInteractionEvent event) throws IOException {
+
+        var url = event.getOption("url").getAsString();
+        for (int i = 0; i < database.length(); i++) {
+            for (String header : database.getJSONObject(i).keySet()) {
+                if (!header.equals("Name") && !header.equals("Discord ID") && !header.equals("Free Fire ID")) {
+                    event.reply("URL (**" + url + "**) has been added to header (**" + header + "**).").setEphemeral(true).queue();
+                    updateDatabase(header, false, url, event.getUser().getId());
+                    return;
+                }
+            }
+        }
     }
 
     @Override
     public void execute(SlashCommandInteractionEvent event) throws IOException {
-
         if (database.length() == 0) {
             event.reply("**The database is empty. Please opt-in first.**").setEphemeral(true).queue();
         } else {
-
-            var url = event.getOption("url").getAsString();
-
-            for (int i = 0; i < database.length(); i++) {
-                for (String header : database.getJSONObject(i).keySet()) {
-                    if (!header.equals("Name") && !header.equals("Discord ID") && !header.equals("Free Fire ID")) {
-                        OptionMapping options = event.getOption("header");
-                        var option_value = options.getAsString();
-                        if (option_value.equals(header)) {
-                            event.reply("URL (**" + url + "**) has been added to header (**" + header + "**).").setEphemeral(true).queue();
-                            updateDatabase(header, false, url, event.getUser().getId());
-                            return;
-                        }
-                    }
-                }
-            }
+            newURL(event);
         }
     }
 }

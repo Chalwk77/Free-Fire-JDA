@@ -1,3 +1,6 @@
+# Prevent "target" folder and subdirectories from being committed to git
+target/
+
 # Compiled class file
 *.class
 

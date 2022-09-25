@@ -33,6 +33,7 @@ public class DeleteHeader implements CommandInterface {
 
     @Override
     public List<OptionData> getOptions() {
+
         List<OptionData> data = new ArrayList<>();
         OptionData options = new OptionData(OptionType.STRING, "header", "Delete this header", true);
 
@@ -48,24 +49,28 @@ public class DeleteHeader implements CommandInterface {
         return data;
     }
 
+    public static void deleteHeader(SlashCommandInteractionEvent event) throws IOException {
+        for (int i = 0; i < database.length(); i++) {
+            for (String header : database.getJSONObject(i).keySet()) {
+                if (!header.equals("Name") && !header.equals("Discord ID") && !header.equals("Free Fire ID")) {
+                    OptionMapping options = event.getOption("header");
+                    var option_value = options.getAsString();
+                    if (option_value.equals(header)) {
+                        event.reply("Header (**" + header + "**) has been deleted.").setEphemeral(true).queue();
+                        updateDatabase(header, false, null, null);
+                        return;
+                    }
+                }
+            }
+        }
+    }
+
     @Override
     public void execute(SlashCommandInteractionEvent event) throws IOException {
         if (database.length() == 0) {
             event.reply("**The database is empty! Please opt-in to the database using `/optin` first.**").setEphemeral(true).queue();
         } else {
-            for (int i = 0; i < database.length(); i++) {
-                for (String header : database.getJSONObject(i).keySet()) {
-                    if (!header.equals("Name") && !header.equals("Discord ID") && !header.equals("Free Fire ID")) {
-                        OptionMapping options = event.getOption("header");
-                        var option_value = options.getAsString();
-                        if (option_value.equals(header)) {
-                            event.reply("Header (**" + header + "**) has been deleted.").setEphemeral(true).queue();
-                            updateDatabase(header, false, "null", "null");
-                            return;
-                        }
-                    }
-                }
-            }
+            deleteHeader(event);
         }
     }
 }

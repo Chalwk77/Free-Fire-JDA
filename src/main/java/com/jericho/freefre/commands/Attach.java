@@ -37,32 +37,29 @@ public class Attach implements CommandInterface {
         return data;
     }
 
+    private static void newFFID(String userID, String ffID, SlashCommandInteractionEvent event) throws IOException {
+        if (ffID.matches("[0-9]+")) {
+            for (int i = 0; i < database.length(); i++) {
+                if (database.getJSONObject(i).getString("Discord ID").equals(userID)) {
+                    database.getJSONObject(i).put("Free Fire ID", ffID);
+                    writeJSONFile(database, "database.json");
+                    event.reply("Your Free Fire ID has been attached to your database entry.").setEphemeral(true).queue();
+                    return;
+                }
+            }
+            event.reply("You are not in the database. Please opt-in first.").setEphemeral(true).queue();
+        } else {
+            event.reply("Your Free Fire ID is invalid.").setEphemeral(true).queue();
+        }
+    }
+
     @Override
     public void execute(SlashCommandInteractionEvent event) throws IOException {
 
         if (database.length() == 0) {
             event.reply("**The database is empty. Please opt-in to the database using `/optin` first.**").setEphemeral(true).queue();
         } else {
-            var userID = event.getUser().getId();
-
-            String ff_id = event.getOption("ff_id").getAsString();
-
-            // Make sure the option is a number:
-            if (ff_id.matches("[0-9]+")) {
-                // Check if the user is already in the database:
-                for (int i = 0; i < database.length(); i++) {
-                    if (database.getJSONObject(i).getString("Discord ID").equals(userID)) {
-                        database.getJSONObject(i).put("Free Fire ID", ff_id);
-                        event.reply("Your Free Fire ID has been updated to **" + ff_id + "**.").setEphemeral(true).queue();
-                        writeJSONFile(database, "database.json");
-                        return;
-                    } else {
-                        event.reply("**You need to opt-in first.**").setEphemeral(true).queue();
-                    }
-                }
-            } else {
-                event.reply("**Please enter a valid Free Fire ID.**").setEphemeral(true).queue();
-            }
+            newFFID(event.getUser().getId(), event.getOption("ff_id").getAsString(), event);
         }
     }
 }

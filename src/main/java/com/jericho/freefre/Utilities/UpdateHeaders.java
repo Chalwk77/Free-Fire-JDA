@@ -3,6 +3,7 @@ package com.jericho.freefre.Utilities;
 import java.io.IOException;
 
 import static com.jericho.freefre.Utilities.FileIO.writeJSONFile;
+import static com.jericho.freefre.main.cprint;
 import static com.jericho.freefre.main.database;
 
 public class UpdateHeaders {
@@ -14,12 +15,6 @@ public class UpdateHeaders {
      * @apiNote If empty is true, the header object will be removed from database.json.
      */
     public static void updateDatabase(String header, Boolean empty, String newURL, String userID) throws IOException {
-
-        //
-        // 1). Add header with empty value to all users.
-        // 2). Add header with new value to current user but empty for everyone else.
-        // 3). Remove the header for everyone.
-        //
 
         for (int i = 0; i < database.length(); i++) {
             if (empty) {
