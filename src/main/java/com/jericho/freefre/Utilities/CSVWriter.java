@@ -7,8 +7,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+
+import static com.jericho.freefre.Utilities.FileIO.getProgramPath;
 
 public class CSVWriter {
 
@@ -21,7 +25,10 @@ public class CSVWriter {
 
     public static void writeCSV() throws IOException {
 
-        JsonNode jsonTree = new ObjectMapper().readTree(new File("src/main/resources/database.json"));
+        String d = getProgramPath();
+        File f = new File(d + "/database.json");
+
+        JsonNode jsonTree = new ObjectMapper().readTree(f);
         if (jsonTree.size() > 0) {
 
             CsvSchema.Builder csvSchemaBuilder = CsvSchema.builder();
@@ -30,9 +37,10 @@ public class CSVWriter {
 
             CsvSchema csvSchema = csvSchemaBuilder.build().withHeader();
             CsvMapper csvMapper = new CsvMapper();
+            File f2 = new File(d + "/database.scv");
             csvMapper.writerFor(JsonNode.class)
                     .with(csvSchema)
-                    .writeValue(new File("src/main/resources/database.csv"), jsonTree);
+                    .writeValue(f2, jsonTree);
         }
     }
 }
